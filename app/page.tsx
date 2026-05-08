@@ -1,13 +1,32 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 
 export default function Home() {
+  // Desktop: open by default. Mobile: closed by default.
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="ito-root">
-      <Header />
+      <Header onMenuToggle={() => setIsSidebarOpen((v) => !v)} isSidebarOpen={isSidebarOpen} />
       <div className="ito-body">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="ito-main" aria-label="Main content area">
           <div className="ito-empty-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -16,7 +35,7 @@ export default function Home() {
           </div>
           <h1 className="ito-empty-title">What can I help you with?</h1>
           <p className="ito-empty-sub">
-            Powered by Gemini. Ask anything — code, write, analyze, brainstorm.
+            The day you stop learning, you start dying. But don't worry, I'm here to help you learn and grow.
           </p>
           <div className="ito-quick-chips" role="list" aria-label="Quick prompt suggestions">
             {["Write some code", "Summarize a doc", "Brainstorm ideas", "Explain a concept"].map((chip) => (
