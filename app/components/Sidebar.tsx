@@ -5,7 +5,7 @@ import { useState } from "react";
 // Navigation configuration
 const navItems = [
   { icon: "chat", label: "Chat", badge: null },
-  { icon: "history", label: "History", badge: "12" },
+  { icon: "history", label: "History", badge: "0" },
   { icon: "folder", label: "Projects", badge: null },
   { icon: "bulb", label: "Prompts", badge: null },
 ];

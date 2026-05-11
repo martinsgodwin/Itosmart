@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 // import Footer from "./components/Footer";
@@ -11,6 +11,7 @@ type Message = { role: "user" | "ai"; content: string };
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
+  const messageListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -20,6 +21,18 @@ export default function Home() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messageListRef.current) {
+      setTimeout(() => {
+        messageListRef.current?.scrollTo({
+          top: messageListRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 0);
+    }
+  }, [messages]);
 
   const handleSendMessage = (content: string) => {
     // Add user message
@@ -70,7 +83,7 @@ export default function Home() {
               </div>
             ) : (
               /* MESSAGE LIST */
-              <div className="ito-message-list">
+              <div className="ito-message-list" ref={messageListRef}>
                 {messages.map((msg, i) => (
                   <div key={i} className={`ito-msg ito-msg-${msg.role}`}>
                     <div className="ito-avatar" style={{ width: "28px", height: "28px", fontSize: "10px" }}>
@@ -83,7 +96,7 @@ export default function Home() {
             )}
 
             {/* SHARED INPUT (with suggestions inside) */}
-            <ChatInput onSend={handleSendMessage} suggestions={suggestions} />
+            <ChatInput onSend={handleSendMessage} suggestions={suggestions} hasMessages={messages.length > 0} />
           </div>
         </main>
       </div>

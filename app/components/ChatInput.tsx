@@ -4,9 +4,10 @@ import { useState, useRef, useEffect } from "react";
 interface ChatInputProps {
   onSend: (message: string) => void;
   suggestions: string[];
+  hasMessages: boolean;
 }
 
-export default function ChatInput({ onSend, suggestions }: ChatInputProps) {
+export default function ChatInput({ onSend, suggestions, hasMessages }: ChatInputProps) {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,8 +27,8 @@ export default function ChatInput({ onSend, suggestions }: ChatInputProps) {
 
   return (
     <div className="ito-input-container">
-      {/* Show suggestions above input if no text is typed */}
-      {!text && (
+      {/* Show suggestions above input if no text is typed and no messages sent */}
+      {!text && !hasMessages && (
         <div className="ito-quick-chips" style={{ marginBottom: "16px" }}>
           {suggestions.map((s) => (
             <button key={s} className="ito-chip" onClick={() => onSend(s)}>
