@@ -150,7 +150,7 @@ export default function Sidebar({ isOpen, setIsOpen, onNewChat }: SidebarProps) 
                 tabIndex={0}
                 title={item.label}
                 onClick={() => { 
-                  setIsOpen(true); // Expand sidebar when clicking an icon
+                  setIsOpen(true); 
                   setActiveNav(item.label); 
                 }}
               >

@@ -34,18 +34,38 @@ export default function Home() {
     }
   }, [messages]);
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     // Add user message
     const newMessages: Message[] = [...messages, { role: "user", content }];
     setMessages(newMessages);
 
-    // Simulate AI response after a delay
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: content }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", errorData);
+        throw new Error(errorData.error || "Failed to get response");
+      }
+
+      const data = await response.json();
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: "I'm processing your request. How else can I help?" },
+        { role: "ai", content: data.message },
       ]);
-    }, 600);
+    } catch (error) {
+      console.error("Chat Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", content: "Sorry, I encountered an error. Please try again." },
+      ]);
+    }
   };
 
   const handleNewChat = () => {
