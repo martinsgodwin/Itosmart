@@ -40,13 +40,33 @@ export default function Home() {
     const newMessages: Message[] = [...messages, { role: "user", content }];
     setMessages(newMessages);
 
-    // Add default AI response
-    setTimeout(() => {
+    try {
+      // Call Gemini API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to get response");
+      }
+
+      const data = await response.json();
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: "This is a default response. I'm ready to be customized!" },
+        { role: "ai", content: data.content },
       ]);
-    }, 500);
+    } catch (error: any) {
+      console.error("Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", content: `Error: ${error.message}` },
+      ]);
+    }
   };
 
   const handleNewChat = () => {
