@@ -1,10 +1,21 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+// Validate API key on startup
+if (!process.env.GEMINI_API_KEY) {
+  console.warn("WARNING: GEMINI_API_KEY environment variable is not set");
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if API key is available
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: "GEMINI_API_KEY is not configured. Please add it to your environment variables." },
+        { status: 500 }
+      );
+    }
+
     const { messages } = await request.json();
 
     if (!messages || messages.length === 0) {
@@ -14,6 +25,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Initialize Gemini AI with API key
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    
     // Convert chat messages to Gemini format
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
@@ -46,9 +60,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ content: text });
   } catch (error: any) {
     console.error("Gemini API Error:", error);
+    
+    // Provide more specific error messages
+    let errorMessage = error.message || "Failed to get response from Gemini";
+    let statusCode = 500;
+    
+    if (error.message?.includes("403") || error.message?.includes("Forbidden")) {
+      errorMessage = "API Key authentication failed. Please check your GEMINI_API_KEY environment variable.";
+      statusCode = 401;
+    } else if (error.message?.includes("429")) {
+      errorMessage = "Rate limit exceeded. Please try again later.";
+      statusCode = 429;
+    }
+    
     return NextResponse.json(
-      { error: error.message || "Failed to get response from Gemini" },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     );
   }
 }
