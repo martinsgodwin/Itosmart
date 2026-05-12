@@ -10,13 +10,18 @@ import ChatInput from "./components/ChatInput";
 type Message = { role: "user" | "ai"; content: string };
 
 export default function Home() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const messageListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSidebarOpen(window.innerWidth >= 768);
+      // Keep sidebar open on desktop, but default to closed on mobile
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
