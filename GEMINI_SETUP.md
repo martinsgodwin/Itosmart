@@ -78,14 +78,14 @@ vercel env add GEMINI_API_KEY
 
 ## API Models Available
 
-The current implementation uses `gemini-1.5-flash`. Other available models:
-- `gemini-1.5-flash`: Fast, multimodal model (current)
+The current implementation uses `gemini-2.0-flash`. Other available models:
+- `gemini-2.0-flash`: Fast, multimodal model (current)
 - `gemini-1.5-pro`: More capable, multimodal model
 - `gemini-2.0-flash`: Latest flash model (if available)
 
 To change the model, edit `app/api/chat/route.ts` and update the model name in:
 ```typescript
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 ```
 
 ## Security Notes

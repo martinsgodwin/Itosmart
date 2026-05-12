@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
 // Use environment variable or fallback to provided API key
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyAvbF-1SlO_l8TbzuEOyO-ICvIrTqc__jA";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyCFddkrE4Ua_zuHz4uar1hZAtF7be4v2XU";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     
     // Convert chat messages to Gemini format
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Build conversation history
     const history = messages.slice(0, -1).map((msg: any) => ({
