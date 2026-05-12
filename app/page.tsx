@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 // import Footer from "./components/Footer";
@@ -39,37 +40,17 @@ export default function Home() {
     const newMessages: Message[] = [...messages, { role: "user", content }];
     setMessages(newMessages);
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: content }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API Error:", errorData);
-        throw new Error(errorData.error || "Failed to get response");
-      }
-
-      const data = await response.json();
+    // Add default AI response
+    setTimeout(() => {
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: data.message },
+        { role: "ai", content: "This is a default response. I'm ready to be customized!" },
       ]);
-    } catch (error) {
-      console.error("Chat Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", content: "Sorry, I encountered an error. Please try again." },
-      ]);
-    }
+    }, 500);
   };
 
   const handleNewChat = () => {
-    setMessages([]); // Clear chat for "New Chat"
+    setMessages([]); 
     if (window.innerWidth < 768) setIsSidebarOpen(false);
   };
 
@@ -92,9 +73,22 @@ export default function Home() {
               /* EMPTY STATE */
               <div className="ito-main" style={{ padding: "0", height: "100%" }}>
                 <div className="ito-empty-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <motion.svg 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5"
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatDelay: 1,
+                    }}
+                  >
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
+                  </motion.svg>
                 </div>
                 <h1 className="ito-empty-title">What can I help you with?</h1>
                 <p className="ito-empty-sub">
