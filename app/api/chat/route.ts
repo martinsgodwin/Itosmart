@@ -1,21 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
-// Validate API key on startup
-if (!process.env.GEMINI_API_KEY) {
-  console.warn("WARNING: GEMINI_API_KEY environment variable is not set");
-}
+// Use environment variable or fallback to provided API key
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyAvbF-1SlO_l8TbzuEOyO-ICvIrTqc__jA";
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if API key is available
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured. Please add it to your environment variables." },
-        { status: 500 }
-      );
-    }
-
     const { messages } = await request.json();
 
     if (!messages || messages.length === 0) {
@@ -26,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize Gemini AI with API key
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     
     // Convert chat messages to Gemini format
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
