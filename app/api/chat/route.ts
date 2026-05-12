@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     
     // Convert chat messages to Gemini format
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Build conversation history
     const history = messages.slice(0, -1).map((msg: any) => ({
